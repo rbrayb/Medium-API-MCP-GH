@@ -80,25 +80,20 @@ If you see errors, check:
 
 2. **Add this configuration** (update the project path):
    ```json
-   {
-     "github.copilot.advanced": {
-       "mcp": {
-         "servers": {
-           "medium-stats-gh": {
-             "command": "dotnet",
-             "args": [
-               "run",
-               "--project",
-               "D:\\path\\to\\Medium-API-MCP-GH\\Medium API MCP GH.csproj",
-               "--",
-               "--mcp"
-             ],
-             "description": "Medium blog statistics and content via MCP"
-           }
-         }
-       }
-     }
-   }
+   "medium-stats-gh": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "x:\\...\\Medium API MCP GH\\Medium-API-MCP-GH\\Medium API MCP GH.csproj"                
+            ],
+            "env": {
+                "MCP_MODE": "true",
+                "ApiKey": "api-key",
+                "Logging__LogLevel__Default": "Information"
+            }
+        }
    ```
 
 3. **Restart VS Code completely**

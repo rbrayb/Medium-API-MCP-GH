@@ -202,24 +202,20 @@ Get all articles published in a specific Medium publication. Accepts either publ
 2. **Configure GitHub Copilot** - See [COPILOT-SETUP.md](COPILOT-SETUP.md) for detailed instructions.
 
 Example VS Code configuration:
-```json
-{
-  "github.copilot.advanced": {
-    "mcp": {
-      "servers": {
-        "medium-stats-gh": {
-          "command": "dotnet",
-          "args": [
-            "run",
-            "--project",
-            "path/to/Medium API MCP GH.csproj",
-            "--",
-            "--mcp"
-          ],
-          "description": "Medium blog statistics and content via MCP"
+"medium-stats-gh": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "x:\\...\\Medium API MCP GH\\Medium-API-MCP-GH\\Medium API MCP GH.csproj"                
+            ],
+            "env": {
+                "MCP_MODE": "true",
+                "ApiKey": "api-key",
+                "Logging__LogLevel__Default": "Information"
+            }
         }
-      }
-    }
   }
 }
 ```

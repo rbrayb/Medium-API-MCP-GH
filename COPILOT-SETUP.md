@@ -271,24 +271,21 @@ Server Version: 1.0.0
 You can configure multiple MCP servers:
 
 ```jsonc
-{
-  "github.copilot.advanced": {
-    "mcp": {
-      "servers": {
-        "medium-stats-gh": {
-          "command": "dotnet",
-          "args": [...],
-          "description": "Medium blog statistics"
-        },
-        "other-server": {
-          "command": "python",
-          "args": [...],
-          "description": "Other MCP server"
+
+"medium-stats-gh": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "x:\\...\\Medium API MCP GH\\Medium-API-MCP-GH\\Medium API MCP GH.csproj"                
+            ],
+            "env": {
+                "MCP_MODE": "true",
+                "ApiKey": "api-key",
+                "Logging__LogLevel__Default": "Information"
+            }
         }
-      }
-    }
-  }
-}
 ```
 
 ## Additional Resources

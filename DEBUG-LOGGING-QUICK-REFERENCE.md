@@ -27,13 +27,13 @@ dotnet run
 |--------|---------|-----------------|
 | `>>>` | Incoming Request | Client sent something |
 | `<<<` | Outgoing Response | Server responding |
-| `??` | Action Starting | About to do something |
+| `?` | Action Starting | About to do something |
 | `?` | Success | Operation succeeded |
 | `?` | Failure | Operation failed |
-| `??` | Warning | Non-critical issue |
+| `?` | Warning | Non-critical issue |
 | `!!!` | Error/Critical | Something bad happened |
-| `??` | Method Entry | Function called |
-| `===` | Major Section | Big separator |
+| `?` | Method Entry | Function called |
+| `???` | Major Section | Big separator |
 | `---` | Subsection | Small separator |
 
 ---
@@ -48,22 +48,22 @@ Medium MCP Server started...
 >>> INCOMING REQUEST: Method='initialize', ID='1'
 ? Initialization complete
 >>> INCOMING REQUEST: Method='tools/list', ID='2'
-Discovered 11 tools
+Discovered 8 tools
 ? Tool discovery complete
 >>> INCOMING REQUEST: Method='tools/call', ID='3'
-========================================
-?? TOOL EXECUTION: get_blog_statistics
-========================================
-?? GetBlogStatisticsAsync - Username: jbloggs
-  ?? Calling Medium API: Users.GetInfoByUsernameAsync
+????????????????????????????????????????
+? TOOL EXECUTION: get_blog_statistics
+????????????????????????????????????????
+? GetBlogStatisticsAsync - Username: rbrayb
+  ? Calling Medium API: Users.GetInfoByUsernameAsync
   ? User info retrieved
 ? Tool execution completed in XXXms
 ```
 
 ### ? Missing API Key
 ```
-?? GetBlogStatisticsAsync - Username: jbloggs
-  ?? Calling Medium API: Users.GetInfoByUsernameAsync
+? GetBlogStatisticsAsync - Username: rbrayb
+  ? Calling Medium API: Users.GetInfoByUsernameAsync
 ? Error in GetBlogStatisticsAsync
 Exception Type: MissingConfigurationException
 Message: The Apikey variable is not defined
@@ -79,8 +79,8 @@ Error Code: invalid_params
 
 ### ? API Error (401)
 ```
-?? GetBlogStatisticsAsync - Username: jbloggs
-  ?? Calling Medium API: Users.GetInfoByUsernameAsync
+? GetBlogStatisticsAsync - Username: rbrayb
+  ? Calling Medium API: Users.GetInfoByUsernameAsync
 ? Error in GetBlogStatisticsAsync
 Exception Type: HttpRequestException
 Message: 401 (Unauthorized)
@@ -112,28 +112,19 @@ If missing ? Check project path in VS Code settings.json
 Look for:
 ```
 >>> INCOMING REQUEST: Method='tools/list'
-Discovered 11 tools:
-  ?? get_blog_statistics
-  ?? get_article_details
-  ?? get_user_articles
-  ?? search_articles
-  ?? search_tags
-  ?? get_top_articles_by_claps
-  ?? get_engagement_metrics
-  ?? get_publication_info
-  ?? get_article_content (Phase 1)
-  ?? get_user_info_by_id (Phase 1)
-  ?? get_publication_articles (Phase 1)
+Discovered 8 tools:
+  • get_blog_statistics
+  ...
 ```
 If missing ? Check MCP server configuration
-If tool count is not 11 ? Check McpToolHandler
+If tool count is 0 ? Check McpToolHandler
 
 ### Tool Execution Failing?
 Look for:
 ```
-========================================
-?? TOOL EXECUTION: tool_name
-========================================
+????????????????????????????????????????
+? TOOL EXECUTION: tool_name
+????????????????????????????????????????
 ```
 Then check for:
 - Parameter parsing errors
@@ -143,7 +134,7 @@ Then check for:
 ### API Calls Failing?
 Look for:
 ```
-?? Calling Medium API: ...
+? Calling Medium API: ...
 ```
 Followed by:
 - `?` = Success
@@ -160,7 +151,7 @@ Followed by:
 
 ### Console (Manual Test)
 ```bash
-cd "x:\...\Medium API MCP GH\Medium-API-MCP-GH"
+cd "D:\Src\VS2026\Medium API MCP"
 set MCP_MODE=true
 set ApiKey=your-key-here
 set Logging__LogLevel__Default=Debug
@@ -230,7 +221,7 @@ RAW RESPONSE SENT:
 ### Parsed Parameters
 ```
 Parsed parameters:
-  • username: jbloggs (Type: String)
+  • username: rbrayb (Type: String)
   • limit: 5 (Type: Int32)
 ```
 
@@ -243,13 +234,13 @@ Parsed parameters:
 ? Tool execution completed in 1234.56ms
 ```
 
-Fast: < 500ms  
-Normal: 500ms - 2000ms  
+Fast: < 500ms
+Normal: 500ms - 2000ms
 Slow: > 2000ms
 
 ### Progress for Multiple Items
 ```
-?? Fetching details for 10 articles
+? Fetching details for 10 articles
   [1/10] Fetching article: ...
   [2/10] Fetching article: ...
   ...
@@ -278,7 +269,7 @@ set MCP_MODE=true
 set ApiKey=your-key-here
 
 # 2. Start server
-cd "x:\...\Medium API MCP GH\Medium-API-MCP-GH"
+cd "D:\Src\VS2026\Medium API MCP"
 dotnet run
 
 # Expected output:
@@ -364,10 +355,10 @@ Each API call is logged with its method name - easy to spot which one failed.
 
 ## Related Documentation
 
-- **TESTING-GUIDE.md** - Complete testing guide with examples
-- **COPILOT-SETUP.md** - MCP server setup and configuration
-- **README-MCP.md** - Detailed tool reference
-- **API-QUICK-REFERENCE.md** - API coverage analysis
+- **DEBUG-LOGGING.md** - Complete debugging guide with examples
+- **DEBUG-LOGGING-SUMMARY.md** - Implementation details
+- **TROUBLESHOOTING.md** - Common issues and solutions
+- **README-MCP.md** - MCP server setup and usage
 
 ---
 
@@ -419,37 +410,6 @@ dotnet run
 - No "Listening for requests"? ? Not in MCP mode
 - No initialize request? ? Client not connecting
 - No tools list? ? Tool discovery failed
-- Tool count not 11? ? Check McpToolHandler.GetToolDefinitions()
 - Tool execution with `?`? ? Check exception details
 - `401` error? ? API key issue
 - `parse_error`? ? Check JSON formatting
-
----
-
-## Tool Count Verification
-
-**Expected tool count: 11**
-
-Phase 0 (Original): 8 tools
-- get_blog_statistics
-- get_article_details
-- get_user_articles
-- search_articles
-- search_tags
-- get_top_articles_by_claps
-- get_engagement_metrics
-- get_publication_info
-
-Phase 1 (Critical Features): 3 tools
-- get_article_content
-- get_user_info_by_id
-- get_publication_articles
-
-If you see a different count, check `McpToolHandler.cs` ? `GetToolDefinitions()` method.
-
----
-
-**Document Version:** 2.0 (Phase 1 Complete)  
-**Last Updated:** December 2024  
-**Total Tools:** 11 (8 original + 3 Phase 1)  
-**API Coverage:** 61% (11/18 methods)
